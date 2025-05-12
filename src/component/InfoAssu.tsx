@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import {columnarEncrypt, columnarDecrypt, vigenereEncrypt, vigenereDecrypt} from '../component/cipher';
 
 const InfoAssu: React.FC = () => {
   const [plaintext, setPlaintext] = useState<string>('');
   const [key, setKey] = useState<string>('');
   const [output, setOutput] = useState<string>('');
+  const [cipherType, setCipherType] = useState('Vigenère Cipher');
 
-  const handleEncode = (): void => {
-    setOutput('Encoded text');
-  };
+  const handleEncode = () => {
+  if (cipherType === "Vigenère Cipher") {
+    setOutput(vigenereEncrypt(plaintext, key));
+  } else {
+    setOutput(columnarEncrypt(plaintext, key));
+  }
+};
 
   const handleDecode = (): void => {
-    setOutput('Decoded text');
+    if (cipherType === "Vigenère Cipher") {
+      setOutput(vigenereDecrypt(plaintext, key));
+    } else {
+      setOutput(columnarDecrypt(plaintext, key));
+    }
   };
 
   return (
@@ -36,7 +46,10 @@ const InfoAssu: React.FC = () => {
                 paddingTop: 30,
                 }}>Cryptogram Algorithm</Form.Label>
           <div style={{ position: 'relative', width: '100%' }}>
-            <Form.Control as="select" style={{ fontSize: 17, paddingRight: '30px', width: 400, height: 50, borderWidth: 2, borderColor: '#4C585B'}}>
+            <Form.Control as="select"
+              value={cipherType}
+              onChange={(e) => setCipherType(e.target.value)}
+              style={{ fontSize: 17, paddingRight: '30px', width: 400, height: 50, borderWidth: 2, borderColor: '#4C585B'}}>
               <option>Vigenère Cipher </option>
               <option>Standard Columnar Transposition Cipher</option>
             </Form.Control>
