@@ -4,25 +4,28 @@ import {columnarEncrypt, columnarDecrypt, vigenereEncrypt, vigenereDecrypt} from
 
 const InfoAssu: React.FC = () => {
   const [plaintext, setPlaintext] = useState<string>('');
+  const [ciphertext, setCiphertext] = useState<string>('');
   const [key, setKey] = useState<string>('');
-  const [output, setOutput] = useState<string>('');
   const [cipherType, setCipherType] = useState('Vigenère Cipher');
 
   const handleEncode = () => {
   if (cipherType === "Vigenère Cipher") {
-    setOutput(vigenereEncrypt(plaintext, key));
+    setCiphertext(vigenereEncrypt(plaintext, key));
   } else {
-    setOutput(columnarEncrypt(plaintext, key));
+    setCiphertext(columnarEncrypt(plaintext, key));
   }
 };
 
   const handleDecode = (): void => {
     if (cipherType === "Vigenère Cipher") {
-      setOutput(vigenereDecrypt(plaintext, key));
+      setCiphertext(vigenereDecrypt(plaintext, key));
     } else {
-      setOutput(columnarDecrypt(plaintext, key));
+      setCiphertext(columnarDecrypt(plaintext, key));
     }
   };
+
+  
+
 
   return (
     <Container className='shadow'
@@ -46,9 +49,8 @@ const InfoAssu: React.FC = () => {
                 paddingTop: 30,
                 }}>Cryptogram Algorithm</Form.Label>
           <div style={{ position: 'relative', width: '100%' }}>
-            <Form.Control as="select"
-              value={cipherType}
-              onChange={(e) => setCipherType(e.target.value)}
+            <Form.Control as="select" value={cipherType} onChange={(e) =>setCipherType(e.target.value)}
+              
               style={{ fontSize: 17, paddingRight: '30px', width: 400, height: 50, borderWidth: 2, borderColor: '#4C585B'}}>
               <option>Vigenère Cipher </option>
               <option>Standard Columnar Transposition Cipher</option>
@@ -108,8 +110,11 @@ const InfoAssu: React.FC = () => {
         </Row>
 
         <Form.Group controlId="output">
-          <Form.Label style={{fontWeight: 600, fontSize: 18, paddingTop: 10}}>Output</Form.Label>
-          <Form.Control as="textarea" rows={3} value={output} readOnly
+          <Form.Label style={{fontWeight: 600, fontSize: 18, paddingTop: 10}}>Cyphertext</Form.Label>
+          <Form.Control as="textarea" 
+                        rows={3} 
+                        value={ciphertext}
+                        onChange={(e) => setCiphertext(e.target.value)}
           style={{fontSize: 17,height: 150, borderWidth: 2, color: 'black',borderColor: '#4C585B', marginBottom: 50}} />
         </Form.Group>
       </Form>
