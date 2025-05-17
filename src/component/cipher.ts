@@ -1,41 +1,59 @@
-// Vigenère Cipher
+const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !@#$%^&*()_+-=[]{}|;:',.<>/?`~\"\\";
+
+function getCharIndex(char: string): number {
+  return CHARSET.indexOf(char);
+}
+
 export function vigenereEncrypt(plaintext: string, key: string): string {
-  key = key.toLowerCase();
   let result = "";
   let keyIndex = 0;
 
   for (const char of plaintext) {
-    if (/[a-zA-Z]/.test(char)) {
-      const shift = key.charCodeAt(keyIndex % key.length) - 97;
-      const base = char === char.toLowerCase() ? 97 : 65;
-      result += String.fromCharCode(((char.charCodeAt(0) - base + shift) % 26) + base);
-      keyIndex++;
-    } else {
+    const charPos = getCharIndex(char);
+    if (charPos === -1) {
       result += char;
+      continue;
     }
+
+    const keyChar = key[keyIndex % key.length];
+    const keyPos = getCharIndex(keyChar);
+    if (keyPos === -1) {
+      continue;
+    }
+
+    const newPos = (charPos + keyPos) % CHARSET.length;
+    result += CHARSET[newPos];
+    keyIndex++;
   }
 
   return result;
 }
 
 export function vigenereDecrypt(ciphertext: string, key: string): string {
-  key = key.toLowerCase();
   let result = "";
   let keyIndex = 0;
 
   for (const char of ciphertext) {
-    if (/[a-zA-Z]/.test(char)) {
-      const shift = key.charCodeAt(keyIndex % key.length) - 97;
-      const base = char === char.toLowerCase() ? 97 : 65;
-      result += String.fromCharCode(((char.charCodeAt(0) - base - shift + 26) % 26) + base);
-      keyIndex++;
-    } else {
+    const charPos = getCharIndex(char);
+    if (charPos === -1) {
       result += char;
+      continue;
     }
+
+    const keyChar = key[keyIndex % key.length];
+    const keyPos = getCharIndex(keyChar);
+    if (keyPos === -1) {
+      continue;
+    }
+
+    const newPos = (charPos - keyPos + CHARSET.length) % CHARSET.length;
+    result += CHARSET[newPos];
+    keyIndex++;
   }
 
   return result;
 }
+
 
 // Helper for Columnar Transposition
 function createOrder(keyword: string): number[] {
