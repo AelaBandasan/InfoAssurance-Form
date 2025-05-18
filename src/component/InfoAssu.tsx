@@ -7,16 +7,30 @@ const InfoAssu: React.FC = () => {
   const [ciphertext, setCiphertext] = useState<string>('');
   const [key, setKey] = useState<string>('');
   const [cipherType, setCipherType] = useState('Vigenère Cipher');
+  const [keyError, setKeyError] = useState<string>('');  // New state for key validation error
+
+  // Validation function for key: must include at least one digit
+  const validateKey = (key: string): boolean => {
+    const hasDigit = /\d/.test(key);
+    if (!hasDigit) {
+      setKeyError('Key must include at least one digit.');
+      return false;
+    }
+    setKeyError('');
+    return true;
+  };
 
   const handleEncode = () => {
-  if (cipherType === "Vigenère Cipher") {
-    setCiphertext(vigenereEncrypt(plaintext, key));
-  } else {
-    setCiphertext(columnarEncrypt(plaintext, key));
-  }
-};
+    if (!validateKey(key)) return;  // stop if key invalid
+    if (cipherType === "Vigenère Cipher") {
+      setCiphertext(vigenereEncrypt(plaintext, key));
+    } else {
+      setCiphertext(columnarEncrypt(plaintext, key));
+    }
+  };
 
   const handleDecode = (): void => {
+    if (!validateKey(key)) return;  // stop if key invalid
     if (cipherType === "Vigenère Cipher") {
       setCiphertext(vigenereDecrypt(plaintext, key));
     } else {
@@ -25,7 +39,6 @@ const InfoAssu: React.FC = () => {
   };
 
   
-
 
   return (
     <Container className='shadow'
@@ -61,11 +74,10 @@ const InfoAssu: React.FC = () => {
                     right: "10px",
                     top: "50%",
                     transform: "translateY(-50%)",
-                    pointerEvents: "none", // Prevents interaction issues
-                    fontSize: "20px" // Adjusts the size of the icon
+                    pointerEvents: "none",
+                    fontSize: "20px"
                 }}>
-
-                </i>
+            </i>
           </div>
         </Form.Group>
 
@@ -92,6 +104,12 @@ const InfoAssu: React.FC = () => {
 
             style={{fontSize: 17, color: 'black',height: 50, borderWidth: 2, borderColor: '#4C585B'}}
           />
+          {/* Show validation error below input */}
+          {keyError && (
+            <div style={{ color: 'red', marginTop: 5, fontWeight: 'bold' }}>
+              {keyError}
+            </div>
+          )}
         </Form.Group>
 
         <Row className="g-0 d-flex justify-content-between"  style={{paddingTop: 15}}>
